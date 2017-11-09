@@ -1,10 +1,7 @@
 <template>
   <div class="preview">
-    <div class="actions">
-      <span @click="zoom += 0.1"><i class="fa fa-plus-circle fa-2x fa-fw"></i></span>
-      <span @click="zoom -= 0.1"><i class="fa fa-minus-circle fa-2x"></i></span>
-    </div>
-    <div :style="{ fontSize: `${Math.round(zoom * 16)}px` }" v-html="latexHtml"></div>
+    <input class="zoom-range" type="range" min="0" max="2" step="0.1" v-model="zoom">
+    <div :style="{ fontSize: `${Math.round(+zoom * 14)}px` }" v-html="latexHtml"></div>
   </div>
 </template>
 
@@ -20,15 +17,16 @@ export default {
     latexHtml: '',
     error: false,
     zoom: 1,
+    currentLatexFile: '',
   }),
   computed: {
-    ...mapGetters(['openFileLatex']),
-    ...mapGetters(['openFile']),
+    ...mapGetters(['openFile', 'openFileLatex']),
   },
-  watch: {
-    openFileLatex(newLatex) {
+  methods: {
+    updateLatex(latex) {
+      if (latex === null) return;
       try {
-        this.latexHtml = katex.renderToString(newLatex, { displayMode: true });
+        this.latexHtml = katex.renderToString(latex, { displayMode: true });
         this.error = false;
       } catch (e) {
         console.error(e);
@@ -36,34 +34,84 @@ export default {
       }
     },
   },
+  watch: {
+    openFileLatex(newLatex) {
+      this.updateLatex(newLatex);
+    },
+  },
 };
 </script>
 
 <style lang="scss">
+@import "../assets/variables.scss";
+
 .preview {
   position: relative;
   padding: 20px;
   height: 100%;
   width: 100%;
-  background-color: #48929B;
+  background-color: $dark_color;
   color: white;
-}
 
-.actions {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  user-select: none;
+  .zoom-range {
+    -webkit-appearance: none;
+    position: absolute;
+    bottom: 20px;
+    width: calc(100% - 40px);
+    height: 10px;
+    border-radius: 5px;
+    background: $mid_color;
+    outline: none;
+    padding: 0;
+    margin: 0;
+  }
 
-  span {
+  .zoom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $primary_color;
     cursor: pointer;
-    font-size: 20px;
-    color: white;
+    -webkit-transition: background .15s ease-in-out;
+    transition: background .15s ease-in-out;
+  }
+  .zoom-range::-webkit-slider-thumb:hover {
+    background: $secondary_color;
+  }
+
+  .zoom-range:active::-webkit-slider-thumb {
+    background: $secondary_color;
+  }
+
+  .zoom-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 50%;
+    background: $primary_color;
+    cursor: pointer;
+    -webkit-transition: background .15s ease-in-out;
+    transition: background .15s ease-in-out;
+  }
+
+  .zoom-range::-moz-range-thumb:hover {
+    background: $secondary_color;
+  }
+
+  .zoom-range:active::-moz-range-thumb {
+    background: $secondary_color;
+  }
+
+
+  .katex-display {
+    max-width: 100%;
+    max-height: 100%;
+    transition: font-size 0.8s;
+    // font-size: 20px;
+    margin: 0!important;
   }
 }
 
-.katex-display {
-  // font-size: 20px;
-  margin: 0!important;
-}
 </style>

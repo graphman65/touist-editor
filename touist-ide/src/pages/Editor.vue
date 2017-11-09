@@ -4,10 +4,13 @@
       <FileList />
     </nav>
     <main>
-      <section class="editor-container">
-        <TouistEditor />
+      <section class="modellist-container" v-show="modelListOpen">
+        <ModelList @closeModelList="modelListOpen = false" />
       </section>
-      <section class="preview-container">
+      <section class="editor-container" v-show="!modelListOpen">
+        <TouistEditor @openModelList="modelListOpen = true" />
+      </section>
+      <section class="preview-container" v-show="!modelListOpen">
         <LatexPreview />
       </section>
     </main>
@@ -18,6 +21,7 @@
 import FileList from '@/components/FileList';
 import TouistEditor from '@/components/TouistEditor';
 import LatexPreview from '@/components/LatexPreview';
+import ModelList from '@/components/ModelList';
 
 export default {
   name: 'Editor',
@@ -25,10 +29,17 @@ export default {
     FileList,
     TouistEditor,
     LatexPreview,
+    ModelList,
   },
   data: () => ({
     fileListOpen: true,
+    modelListOpen: false,
   }),
+  watch: {
+    $route(old, n) {
+      if (old.path !== n.path) this.modelListOpen = false;
+    },
+  },
 };
 </script>
 
@@ -60,12 +71,19 @@ main {
   min-width: 60%;
   max-width: 60%;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modellist-container {
+  width: 100%;
+  min-height: 100%;
 }
 
 .preview-container {
   width: 40%;
   min-width: 40%;
-  box-shadow: -3px 0px 3px #264348;
+  box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 </style>

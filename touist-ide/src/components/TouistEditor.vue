@@ -5,7 +5,7 @@
         <div @click="deleteFile(openFile.name)" class="delete">Delete <i class="fa fa-close"></i></div>
       </div>
       <div class="right-actions">
-        <div @click="solve(openFile.name)" class="solve">Solve <i class="fa fa-check"></i></div>
+        <div @click="solveFile(openFile.name)" class="solve">Solve <i class="fa fa-check"></i></div>
       </div>
       <input
         @keyup.enter="saveName"
@@ -57,15 +57,23 @@ export default {
     });
 
     this.codemirror.vueComponent = this;
-    this.codemirror.on('change', cm => this.update(cm.getValue()));
+    this.codemirror.on('change', cm => this.update(false, cm.getValue()));
+    if (this.openFile) {
+      this.codemirror.setValue(this.openFile.content);
+      this.updateLatex({
+        force: true,
+        newContent: this.openFile.content,
+        fileName: this.openFile.name,
+      });
+    }
   },
   computed: {
     ...mapGetters(['openFile', 'defaultFile']),
   },
   methods: {
-    ...mapActions(['updateLatex', 'updateContent']),
+    ...mapActions(['updateLatex', 'updateContent', 'solve']),
     ...mapMutations(['setName', 'deleteFile']),
-    update: debounce(async function updatea(newContent) {
+    update: debounce(async function update(newContent) {
       await this.updateLatex({
         newContent,
         fileName: this.openFile.name,
@@ -83,6 +91,10 @@ export default {
       this.editName = true;
       setTimeout(() => this.$refs.nameInput.focus(), 50);
     },
+    async solveFile(fileName) {
+      await this.solve(fileName);
+      this.$emit('openModelList');
+    },
   },
   watch: {
     openFile(newOpenFile) {
@@ -91,13 +103,15 @@ export default {
         return;
       }
       this.codemirror.setValue(newOpenFile.content);
+      this.update(true, newOpenFile.content);
     },
   },
 };
 </script>
 
-
 <style lang="scss">
+@import "../assets/variables.scss";
+
 .touist-editor {
   height: 100%;
   max-height: 100%;
@@ -114,8 +128,8 @@ export default {
     font-size: 14px;
     user-select: none;
     padding: 10px;
-    color: #F2F1EF;
-    background-color: #5D8CAE;
+    color: $light_color;
+    background-color: $mid_color;
     text-align: center;
     font-weight: bold;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -128,7 +142,7 @@ export default {
 
       .delete {
         cursor: pointer;
-        background-color: #EF4836;
+        background-color: $secondary_color;
         padding: 5px;
         border-radius: 3px;
       }
@@ -141,7 +155,7 @@ export default {
       .solve {
         cursor: pointer;
         text-transform: uppercase;
-        background-color: #03C9A9;
+        background-color: $ternary_color;
         padding: 5px 10px;
         border-radius: 3px;
       }
@@ -154,7 +168,7 @@ export default {
       border-radius: 5px;
       border: none;
       background-color: rgba(0, 0, 0, 0.5);
-      color: #F2F1EF;
+      color: $light_color;
       text-align: center;
     }
 

@@ -44,10 +44,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../assets/variables.scss";
+
 .file-list {
   height: 100%;
   width: 100%;
-  background-color: #1F4788;
+  background-color: $file_list_bg;
   display: flex;
   flex-direction: column;
   color: #F2F1EF;
@@ -57,7 +59,7 @@ export default {
     user-select: none;
     padding: 10px;
     text-decoration: none;
-    color: #F2F1EF;
+    color: $light_color;
     cursor: pointer;
 
     &.selected {
@@ -78,7 +80,7 @@ export default {
 
     &.new-file {
       // margin-top: 20px;
-      background-color: #EF4836;
+      background-color: $file_list_new_file_bg;
     }
   }
 
