@@ -23,6 +23,10 @@ services:
 
   touist_ide:
     container_name: touist_ide
-    build: ./touist-ide
+    build:
+      context: ./touist-ide
+      dockerfile: Dockerfile
+      args:
+        - SERVER_HOST=${SERVER_HOST}
     env_file:
       - ./prod.env
