@@ -1,0 +1,5 @@
+# We want to avoid the copy of node_modules as it is dependent
+# on the host architecture (mac user, I am looking at you).
+# Also, public/ will be re-compiled by yarn in the container.
+node_modules/
+public/
