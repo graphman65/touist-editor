@@ -11,3 +11,10 @@ regex = "0.2.2"
 serde = "1.0"
 serde_derive = "1.0"
 lazy_static = "0.2.9"
+
+# This is a trick in order to avoid the rebuild of every dependency package.
+# We only want our main.rs to be recompiled, the rest should be cached by
+# docker. See: https://stackoverflow.com/a/39662015/3808537
+[lib]
+name = "dummy"
+path = "dummy.rs"
