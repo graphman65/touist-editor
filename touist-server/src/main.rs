@@ -136,12 +136,11 @@ fn solve(touist_input: TouistInput) -> Json<Value> {
 
     let parts: Vec<&str> = stdout.split("==== ").collect();
     let len = parts.len();
-    println!("{:?} {:?}", len, parts);
-
+    
     if len > 1 {
         for part in &parts[0..len] {
             let mut model : HashMap<String, bool> = HashMap::new();
-            if !part.to_string().starts_with("model") { continue } 
+            if !part.to_string().starts_with("model") { continue }
             for capture in RE.captures_iter(part) {
                 model.insert(
                     capture.name("key").map_or(String::from(""), |m| String::from(m.as_str())),
