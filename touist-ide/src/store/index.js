@@ -83,7 +83,7 @@ const actions = {
   async updateLatex({ commit, state }, { force = false, fileName, newContent }) {
     const file = state.files.find(f => f.name === fileName);
     if ((!file || newContent === file.content) && !force) return;
-    const { error, latex } = (await axios.get(`${config.serverUrl}/latex`, {
+    const { error, latex } = (await axios.get('/api/latex', {
       params: {
         source: newContent,
         solver: file.solver,
@@ -96,7 +96,7 @@ const actions = {
   async solve({ commit, state }, fileName) {
     const file = state.files.find(f => f.name === fileName);
     if (!file || !file.content) return;
-    const { models } = (await axios.get(`${config.serverUrl}/solve`, {
+    const { models } = (await axios.get('/api/solve', {
       params: {
         source: file.content,
         solver: file.solver,

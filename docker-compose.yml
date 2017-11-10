@@ -4,11 +4,11 @@ services:
   touist_nginx:
     container_name: touist_nginx
     build: ./touist-nginx
-    command: bash -c "envsubst '$$IDE_HOST $$SERVER_HOST' < /etc/nginx/conf.d/touist.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: bash -c "envsubst '$$HOST' < /etc/nginx/conf.d/touist.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     ports:
       - 80:80
-    env_file:
-      - ./prod.env
+    environment:
+      - HOST=${HOST}
     depends_on:
       - touist_server
       - touist_ide
@@ -16,17 +16,10 @@ services:
   touist_server:
     container_name: touist_server
     build: ./touist-server
-    env_file:
-      - ./prod.env
     environment:
       - ROCKET_ENV=prod
+      - HOST=${HOST}
 
   touist_ide:
     container_name: touist_ide
-    build:
-      context: ./touist-ide
-      dockerfile: Dockerfile
-      args:
-        - SERVER_HOST=${SERVER_HOST}
-    env_file:
-      - ./prod.env
+    build: ./touist-ide
