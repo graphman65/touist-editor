@@ -13,24 +13,8 @@ use std::collections::HashMap;
 use std::io::{Write, Read};
 use std::process::{Command, Stdio};
 
-use rocket::request::{self, Request, FromRequest};
-use rocket::outcome::Outcome::*;
 use rocket_contrib::{Json, Value};
-
 use regex::Regex;
-
-struct RequestInfos {
-    host: String
-}
-
-impl<'a, 'r> FromRequest<'a, 'r> for RequestInfos {
-    type Error = ();
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, ()> {
-        Success(RequestInfos {
-            host: String::from(request.headers().get_one("host").unwrap_or("fail to retrieve host"))
-        })
-    }
-}
 
 #[derive(Serialize)]
 struct Position {
@@ -72,10 +56,10 @@ fn parse_error(error: String) -> Option<TouistError> {
 }
 
 #[get("/")]
-fn index(request_infos: RequestInfos) -> Json<Value> {
+fn index() -> Json<Value> {
     Json(json!({
-        "solve": format!("http://{}/solve", request_infos.host),
-        "latex": format!("http://{}/latex", request_infos.host)
+        "solve": "/api/solve",
+        "latex": "/api/latex"
     }))
 }
 
@@ -136,7 +120,7 @@ fn solve(touist_input: TouistInput) -> Json<Value> {
 
     let parts: Vec<&str> = stdout.split("==== ").collect();
     let len = parts.len();
-    
+
     if len > 1 {
         for part in &parts[0..len] {
             let mut model : HashMap<String, bool> = HashMap::new();
@@ -158,5 +142,5 @@ fn solve(touist_input: TouistInput) -> Json<Value> {
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![index, latex, solve]).launch();
+    rocket::ignite().mount("/api", routes![index, latex, solve]).launch();
 }

@@ -4,13 +4,13 @@ services:
   touist_nginx:
     container_name: touist_nginx
     build: ./touist-nginx
-    command: bash -c "envsubst '$$IDE_HOST $$SERVER_HOST' < /etc/nginx/conf.d/touist.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: bash -c "envsubst '$$HOST' < /etc/nginx/conf.d/touist.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     ports:
       - 80:80
+    environment:
+      - HOST=${HOST}
     volumes:
       - ./touist-nginx/nginx.conf:/etc/nginx/conf.d/touist.template
-    env_file:
-      - ./dev.env
     depends_on:
       - touist_server
       - touist_ide
@@ -21,16 +21,10 @@ services:
     command: cargo run
     volumes:
       - ./touist-server:/usr/src/app
-    env_file:
-      - ./dev.env
 
   touist_ide:
     container_name: touist_ide
     build: ./touist-ide
     command: yarn dev
-    environment:
-      - PORT=3000
-    env_file:
-      - ./dev.env
     volumes:
       - ./touist-ide:/usr/src/app
