@@ -21,6 +21,7 @@ services:
     command: cargo run
     volumes:
       - ./touist-server:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./dev.env
 
@@ -34,3 +35,4 @@ services:
       - ./dev.env
     volumes:
       - ./touist-ide:/usr/src/app
+      - /usr/src/app/node_modules
