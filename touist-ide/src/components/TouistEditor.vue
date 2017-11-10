@@ -3,6 +3,8 @@
     <div class="topbar">
       <div class="left-actions">
         <div @click="deleteFile(openFile.name)" class="delete">Delete <i class="fa fa-close"></i></div>
+      </div>
+      <div class="right-actions">
         <div @click="solverSelectorOpen = !solverSelectorOpen" class="solvers">
           {{ openFile.solver.toUpperCase() }} <i class="fa fa-chevron-down"></i>
           <div class="solver-selector" v-if="solverSelectorOpen">
@@ -11,8 +13,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="right-actions">
         <div @click="solveFile(openFile.name)" class="solve">Solve <i class="fa fa-check"></i></div>
       </div>
       <input
@@ -162,13 +162,26 @@ export default {
         padding: 5px;
         border-radius: 3px;
       }
+    }
+
+    .right-actions {
+      position: absolute;
+      right: 10px;
+
+      .solve {
+        cursor: pointer;
+        text-transform: uppercase;
+        background-color: $ternary_color;
+        padding: 5px 10px;
+        border-radius: 3px;
+      }
 
       .solvers {
         cursor: pointer;
         background-color: $primary_color;
         padding: 5px;
         border-radius: 3px;
-        margin-left: 5px;
+        margin-right: 5px;
       }
 
       .solver-selector {
@@ -187,19 +200,6 @@ export default {
         &:hover {
           background-color: $secondary_color;
         }
-      }
-    }
-
-    .right-actions {
-      position: absolute;
-      right: 10px;
-
-      .solve {
-        cursor: pointer;
-        text-transform: uppercase;
-        background-color: $ternary_color;
-        padding: 5px 10px;
-        border-radius: 3px;
       }
     }
 
