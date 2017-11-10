@@ -20,7 +20,7 @@ services:
     build: ./touist-server
     command: cargo run
     volumes:
-      - ./touist-server:/usr/src/app
+      - ./touist-server/src:/usr/src/app/src
 
   touist_ide:
     container_name: touist_ide
