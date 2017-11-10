@@ -28,3 +28,4 @@ services:
     command: yarn dev
     volumes:
       - ./touist-ide:/usr/src/app
+      - /usr/src/app/node_modules
