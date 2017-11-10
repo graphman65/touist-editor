@@ -13,12 +13,14 @@ const defaultFile = {
   name: 'Default file',
   content: ';; Default file',
   latex: '',
+  solver: 'sat',
   error: null,
   models: [],
 };
 
 const initialState = {
-  files: defaultFiles.length > 0 ? defaultFiles : [defaultFile],
+  files: defaultFiles.length > 0 ?
+    defaultFiles.map(f => ({ ...defaultFile, ...f })) : [defaultFile],
 };
 
 const mutations = {
@@ -52,6 +54,12 @@ const mutations = {
       Vue.set(found, 'models', models);
     }
   },
+  setSolver(state, { fileName, solver }) {
+    const found = state.files.find(f => f.name === fileName);
+    if (found) {
+      Vue.set(found, 'solver', solver);
+    }
+  },
   newFile(state, name) {
     state.files.push({
       ...defaultFile,
@@ -78,7 +86,7 @@ const actions = {
     const { error, latex } = (await axios.get(`${config.serverUrl}/latex`, {
       params: {
         source: newContent,
-        solver: 'sat',
+        solver: file.solver,
       },
     })).data;
 
@@ -91,7 +99,7 @@ const actions = {
     const { models } = (await axios.get(`${config.serverUrl}/solve`, {
       params: {
         source: file.content,
-        solver: 'sat',
+        solver: file.solver,
       },
     })).data;
     commit('setModels', { fileName, models });

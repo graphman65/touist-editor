@@ -3,6 +3,14 @@
     <div class="topbar">
       <div class="left-actions">
         <div @click="deleteFile(openFile.name)" class="delete">Delete <i class="fa fa-close"></i></div>
+        <div @click="solverSelectorOpen = !solverSelectorOpen" class="solvers">
+          {{ openFile.solver.toUpperCase() }} <i class="fa fa-chevron-down"></i>
+          <div class="solver-selector" v-if="solverSelectorOpen">
+            <div class="solver" v-for="solver in solvers" @click="setSolver({ fileName: openFile.name, solver })">
+              {{ solver.toUpperCase() }}
+            </div>
+          </div>
+        </div>
       </div>
       <div class="right-actions">
         <div @click="solveFile(openFile.name)" class="solve">Solve <i class="fa fa-check"></i></div>
@@ -31,6 +39,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import CodeMirror from 'codemirror';
 
+import config from '@/config';
 import debounce from '@/utils/debounce';
 
 export default {
@@ -38,6 +47,8 @@ export default {
   data: () => ({
     editName: false,
     editedName: '',
+    solverSelectorOpen: false,
+    solvers: config.solvers,
   }),
   created() {
     if (!this.openFile) {
@@ -72,7 +83,7 @@ export default {
   },
   methods: {
     ...mapActions(['updateLatex', 'updateContent', 'solve']),
-    ...mapMutations(['setName', 'deleteFile']),
+    ...mapMutations(['setName', 'deleteFile', 'setSolver']),
     update: debounce(async function update(newContent) {
       await this.updateLatex({
         newContent,
@@ -136,6 +147,11 @@ export default {
     z-index: 10;
     position: relative;
 
+    .left-actions, .right-actions {
+      display: flex;
+      flex-direction: row;
+    }
+
     .left-actions {
       position: absolute;
       left: 10px;
@@ -145,6 +161,32 @@ export default {
         background-color: $secondary_color;
         padding: 5px;
         border-radius: 3px;
+      }
+
+      .solvers {
+        cursor: pointer;
+        background-color: $primary_color;
+        padding: 5px;
+        border-radius: 3px;
+        margin-left: 5px;
+      }
+
+      .solver-selector {
+        position: absolute;
+        margin-top: 5px;
+        cursor: pointer;
+        background-color: $dark_color;
+        min-width: 50px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        margin-left: -5px;
+      }
+
+      .solver {
+        padding: 5px 10px;
+        &:hover {
+          background-color: $secondary_color;
+        }
       }
     }
 

@@ -5,4 +5,5 @@ export default {
   isDev,
   serverUrl: isDev ? `http://${process.env.SERVER_HOST}` : `http://${process.env.SERVER_HOST}`,
   version: `v${VERSION}${isDev ? '-dev' : ''}`,
+  solvers: ['sat', 'qbf'],
 };
