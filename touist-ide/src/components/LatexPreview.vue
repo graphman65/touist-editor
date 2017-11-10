@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     updateLatex(latex) {
-      if (latex === null) return;
+      if (latex === null || !this.openFile) return;
       try {
         this.latexHtml = katex.renderToString(latex, { displayMode: true });
         this.error = false;

@@ -1,6 +1,6 @@
 <template>
   <div class="model-list">
-    <div @click="$emit('closeModelList')" class="back-to-editor">Back to code</div>
+    <div @click="$emit('closeModelList')" class="close">Close</div>
     <header>Model list</header>
     <div class="model-types">
       <i
@@ -69,7 +69,7 @@ export default {
     margin-bottom: 10px;
   }
 
-  .back-to-editor {
+  .close {
     border-radius: 5px;
     padding: 10px;
     color: white;
@@ -112,7 +112,7 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 17px;
 
     .next-model, .previous-model {
       border-radius: 5px;
