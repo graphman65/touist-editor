@@ -17,3 +17,9 @@ A simple browser based ide for [Touist](https://github.com/touist/touist)
 
 ### Development
 ```docker-compose -f docker-compose.dev.yml up```
+
+
+### Prod
+```
+SERVER_HOST=touist-server.localhost docker-compose build
+docker-compose up```
