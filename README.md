@@ -12,14 +12,11 @@ A simple browser based ide for [Touist](https://github.com/touist/touist)
 - [Docker](https://www.docker.com/)
 - [docker-compose](https://docs.docker.com/compose/)
 
-### How to
-```docker-compose up```
-
 ### Development
-```docker-compose -f docker-compose.dev.yml up```
+```HOST=touist.localhost docker-compose -f docker-compose.dev.yml up```
 
 
 ### Prod
 ```
-SERVER_HOST=touist-server.localhost docker-compose build
+HOST=touist.localhost docker-compose build
 docker-compose up```
