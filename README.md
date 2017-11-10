@@ -19,4 +19,5 @@ A simple browser based ide for [Touist](https://github.com/touist/touist)
 ### Prod
 ```
 HOST=touist.localhost docker-compose build
-docker-compose up```
+docker-compose up
+```
