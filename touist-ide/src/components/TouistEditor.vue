@@ -8,7 +8,7 @@
         <div @click="solverSelectorOpen = !solverSelectorOpen" class="solvers">
           {{ openFile.solver.toUpperCase() }} <i class="fa fa-chevron-down"></i>
           <div class="solver-selector" v-if="solverSelectorOpen">
-            <div class="solver" v-for="solver in solvers" @click="setSolver({ fileName: openFile.name, solver })">
+            <div class="solver" v-for="solver in solvers" @click="changeSolver(solver)">
               {{ solver.toUpperCase() }}
             </div>
           </div>
@@ -105,6 +105,15 @@ export default {
     async solveFile(fileName) {
       await this.solve(fileName);
       this.$emit('openModelList');
+    },
+    async changeSolver(solver) {
+      this.setSolver({ fileName: this.openFile.name, solver });
+      await this.updateLatex({
+        newContent: this.openFile.content,
+        fileName: this.openFile.name,
+        force: true,
+      });
+      this.codemirror.performLint();
     },
   },
   watch: {
