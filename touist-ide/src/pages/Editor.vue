@@ -10,14 +10,17 @@
       </div>
     </nav>
     <main :style="{ width: fileListOpen ? 'calc(100% - 250px)' : '100%'}">
-      <section class="editor-container">
+      <section class="editor-container" :style="{ width: editorWidth, maxWidth: editorWidth, minWidth: editorWidth }">
         <TouistEditor @openModelList="modelListOpen = true" />
+        <div class="resizer" @dragstart="startDrag" @dragend="endDrag" draggable="true"></div>
+        <div class="resizer-indicator"
       </section>
-      <section class="modellist-container" v-show="modelListOpen">
-        <ModelList @closeModelList="modelListOpen = false" />
-      </section>
-      <section class="preview-container" v-show="!modelListOpen">
-        <LatexPreview />
+      <section
+        class="preview-model-container"
+        :style="{ width: rightWidth, maxWidth: rightWidth, minWidth: rightWidth }"
+      >
+        <ModelList @closeModelList="modelListOpen = false" v-show="modelListOpen" />
+        <LatexPreview v-show="!modelListOpen" />
       </section>
     </main>
   </div>
@@ -42,6 +45,9 @@ export default {
     fileListOpen: true,
     fileListToggleOpen: true,
     modelListOpen: false,
+    dragging: false,
+    startDragX: 0,
+    xOffset: 0,
   }),
   created() {
     document.addEventListener('keydown', async (e) => {
@@ -60,9 +66,23 @@ export default {
   },
   computed: {
     ...mapGetters(['openFile']),
+    rightWidth() {
+      return `calc(40% - ${this.xOffset}px)`;
+    },
+    editorWidth() {
+      return `calc(60% + ${this.xOffset}px)`;
+    },
   },
   methods: {
     ...mapActions(['solve']),
+    startDrag(e) {
+      this.dragging = true;
+      this.startDragX = e.clientX;
+    },
+    endDrag(e) {
+      this.dragging = false;
+      this.xOffset += e.clientX - this.startDragX;
+    },
   },
   watch: {
     $route(old, n) {
@@ -123,25 +143,24 @@ main {
 }
 
 .editor-container {
-  width: 60%;
-  min-width: 60%;
-  max-width: 60%;
   z-index: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.modellist-container {
-  width: 40%;
-  min-width: 40%;
+.preview-model-container {
   box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
-.preview-container {
-  width: 40%;
-  min-width: 40%;
-  box-shadow: -1px 0px 5px rgba(0, 0, 0, 0.5);
-  z-index: 10;
+.resizer {
+  position: absolute;
+  height: 100vh;
+  width: 10px;
+  right: 0;
+  background-color: transparent;
+  z-index: 1000;
+  cursor: ew-resize;
 }
 </style>
