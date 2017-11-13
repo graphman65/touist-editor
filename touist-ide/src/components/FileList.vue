@@ -14,6 +14,10 @@
       <i class="fa fa-file-text fa-fw"></i> {{ file.name }}
       <i class="fa fa-angle-right open-action"></i>
     </router-link>
+    <div style="flex-grow: 1"></div>
+    <a class="item report-bug" target="_blank" rel="noopener noreferrer" href="https://github.com/graphman65/touist-editor/issues">
+      <i class="fa fa-bug fa-fw"></i> Report bug
+    </a>
   </div>
 </template>
 
@@ -49,7 +53,7 @@ export default {
 .file-list {
   height: 100%;
   width: 100%;
-  background-color: $file_list_bg;
+  background-color: $dark_color;
   display: flex;
   flex-direction: column;
   color: #F2F1EF;
@@ -80,7 +84,11 @@ export default {
 
     &.new-file {
       // margin-top: 20px;
-      background-color: $file_list_new_file_bg;
+      background-color: $secondary_color;
+    }
+
+    &.report-bug {
+      background-color: $ternary_color;
     }
   }
 
