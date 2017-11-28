@@ -2,7 +2,7 @@
   <div class="model-list">
     <div @click="$emit('closeModelList')" class="close">Close</div>
     <header>Model list</header>
-    <div class="model-types">
+    <!-- <div class="model-types">
       <i
         class="fa fa-columns fa-fw fa-2x"
         @click="modelType = 'table-model'"
@@ -13,7 +13,7 @@
         @click="modelType = 'sudoku-model'"
         :class="{ selected: modelType === 'sudoku-model' }"
       ></i>
-    </div>
+    </div> -->
     <div v-if="openFile && openFile.models && openFile.models.length > 0">
       <div class="actions">
         <div @click="currentModelIndex -= 1" class="previous-model" :class="{ disabled: currentModelIndex <= 0 }">
@@ -24,7 +24,22 @@
           Next model
         </div>
       </div>
-      <component :is="modelType" :currentModelIndex="currentModelIndex" :models="openFile.models"></component>
+      <div class="">
+        <input type="text" class="filter-input" v-model="keyFilter" placeholder="Regexp" />
+        <button class="value-filter" @click="changeValueFilter(true)">
+          <i class="fa fa-check-circle model-true" :class="{ disabled: valueFilter === false }"></i>
+        </button>
+        <button class="value-filter" @click="changeValueFilter(false)">
+          <i class="fa fa-times-circle model-false" :class="{ disabled: valueFilter === true }"></i>
+        </button>
+      </div>
+      <component
+        :is="modelType"
+        :currentModelIndex="currentModelIndex"
+        :models="openFile.models"
+        :keyFilter="keyFilter"
+        :valueFilter="valueFilter"
+      ></component>
     </div>
     <div class="no-model" v-else>
       No model found
@@ -42,11 +57,22 @@ export default {
     ...modelTypes,
   },
   data: () => ({
-    modelType: 'sudoku-model',
+    modelType: 'table-model',
     currentModelIndex: 0,
+    keyFilter: '',
+    valueFilter: null,
   }),
   computed: {
     ...mapGetters(['openFile']),
+  },
+  methods: {
+    changeValueFilter(value) {
+      if (value === this.valueFilter) this.valueFilter = null;
+      else if (value && this.valueFilter !== false) this.valueFilter = false;
+      else if (value === false && this.valueFilter !== true) this.valueFilter = true;
+      else if (this.valueFilter === null) this.valueFilter = value;
+      else this.valueFilter = null;
+    },
   },
 };
 </script>
@@ -67,6 +93,26 @@ export default {
     text-align: center;
     font-size: 30px;
     margin-bottom: 10px;
+  }
+
+  .filter-input {
+    border: 1px solid $mid_color;
+    margin-top: 15px;
+    padding: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+  }
+
+  .value-filter {
+    border: none;
+    background-color: transparent;
+    border-radius: 5px;
+    padding: 4px 6px;
+    outline: none;
+
+    .disabled {
+      color: $mid_color;
+    }
   }
 
   .close {

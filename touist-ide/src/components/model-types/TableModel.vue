@@ -3,7 +3,7 @@
     <table>
       <thead>
         <tbody>
-          <tr v-for="(value, key) in models[currentModelIndex]">
+          <tr v-for="(value, key) in models[currentModelIndex]" v-if="valid(key, value)">
             <th>{{ key }}</th>
             <td>
               <i class="fa fa-check-circle model-true" v-if="value"></i>
@@ -19,7 +19,22 @@
 <script>
 export default {
   name: 'TableModel',
-  props: ['currentModelIndex', 'models'],
+  props: ['currentModelIndex', 'models', 'keyFilter', 'valueFilter'],
+  computed: {
+    filterRegexp() {
+      try {
+        return new RegExp(this.keyFilter.split(':')[0]);
+      } catch (e) {
+        return null;
+      }
+    },
+  },
+  methods: {
+    valid(key, value) {
+      return (this.keyFilter.length === 0 || (this.filterRegexp && this.filterRegexp.test(key))) &&
+             (this.valueFilter === null || value === this.valueFilter);
+    },
+  },
 };
 </script>
 
@@ -27,14 +42,13 @@ export default {
 @import "../../assets/variables.scss";
 
 .table-container {
-  max-height: calc(100vh - 240px);
+  max-height: calc(100vh - 250px);
   overflow: auto;
-  margin: 10px;
 }
 
 table {
   user-select: none;
-  margin-top: 20px;
+  margin-bottom: 10px;
   margin-left: auto;
   margin-right: auto;
   border-collapse: collapse;
